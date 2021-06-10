@@ -1,0 +1,24 @@
+{
+  "name": "depressobot",
+  "version": "1.0.0",
+  "description": "Discord bot that helps people with suicidal thoughts by detecting suicidal keywords in discord servers and sends phone number of instances that can help against severe depression.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/4d6f5079/DepressoBot.git"
+  },
+  "author": "4d6f5079",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/4d6f5079/DepressoBot/issues"
+  },
+  "homepage": "https://github.com/4d6f5079/DepressoBot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
+    "string-similarity": "^4.0.4"
+  }
+}
