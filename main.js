@@ -6,6 +6,7 @@ const DepressoBot = new Discord.Client();
 
 const keywords = [
     'depressed',
+    'depression',
     'suicide',
     'kill myself',
     'killmyself',
@@ -15,6 +16,8 @@ const keywords = [
     'hatemyself',
     'hat myself',
     'suicidal',
+    'suici',
+    'suic',
     'suicidal thoughts',
     'depression',
     'depress',
@@ -25,8 +28,10 @@ const keywords = [
     'commit suic',
 ];
 const sentence_delimiters = / +/;
+
+// TODO: send the phone numbers 
 const replay_msg = 
-            'If you have suicidal thoughts, PLEASE seek help as soon as you can. \
+            '\n If you have suicidal thoughts, PLEASE seek help as soon as you can. \
             PLEASE call the suicidal prevention lifelines in your region/country:';
 
 /**
@@ -45,7 +50,7 @@ function compare_keyword_to_multiple_strings(keyword_string, strings_arr, min_sc
 // Event listener for messages
 DepressoBot.on('message', message => {
 
-    if (message.author.bot) {console.log('bot shouldn\'t send msg to himself.'); return;};
+    if (message.author.bot) return;
 
     // preprocessing the message sent by a person
     let split_msg = message.content
@@ -54,7 +59,7 @@ DepressoBot.on('message', message => {
         .split(sentence_delimiters); // split sentence into words that have whitespace between them
     split_msg = [...new Set(split_msg)]; // remove duplicates
     
-    console.log(`split message: ${split_msg}`);
+    //console.log(`split message: ${split_msg}`);
     
     for (const kw of keywords) {
         // If the words in the message contain suicidal keywords 
