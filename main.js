@@ -4,30 +4,50 @@ const stringSimilarity = require("string-similarity");
 
 const DepressoBot = new Discord.Client();
 
-const keywords = ['depressed','suicide','kill myself','killmyself','suicidal','suicidal thoughts','depression','depress'];
+const keywords = [
+    'depressed',
+    'suicide',
+    'kill myself',
+    'killmyself',
+    'kilmyself',
+    'kil myself',
+    'hate myself',
+    'hatemyself',
+    'hat myself',
+    'suicidal',
+    'suicidal thoughts',
+    'depression',
+    'depress',
+    'depres',
+    'commit suicide',
+    'commitsuicide',
+    'comitsuicide',
+    'commit suic',
+];
 const sentence_delimiters = / +/;
+const replay_msg = 
+            'If you have suicidal thoughts, PLEASE seek help as soon as you can. \
+            PLEASE call the suicidal prevention lifelines in your region/country:';
 
 /**
  * I am ready message
  */
 DepressoBot.once('ready', () => {
-    console.log('I am ready!');
+    console.log('DepressoBot is ready!');
 });
-  
-/**
- * Compare 2 strings using dice algorithm
- * If score is above 71%, it return true. Otherwise, false.
- */
-function compare_two_strings(string_a, string_b, min_score=0.71) {
-    const score = stringSimilarity.compareTwoStrings(string_a, string_b);
-    console.log(`compare ${string_a} with keyword ${string_b}: ${score} -> ${true ? score >= min_score : false}`); 
-    return (true ? score >= min_score : false);
+
+function compare_keyword_to_multiple_strings(keyword_string, strings_arr, min_score=0.61) {
+    const score_object = stringSimilarity.findBestMatch(keyword_string, strings_arr);
+    //console.log(`compare keyword ${keyword_string} with strings ${strings_arr}: ${score_object.bestMatch.rating} -> ${true ? (score_object.bestMatch.rating >= min_score) : false}`); 
+    return (true ? (score_object.bestMatch.rating >= min_score) : false);
 }
 
 // Event listener for messages
 DepressoBot.on('message', message => {
-    if (message.author.bot) {console.log('bot cannot send msg to himself.'); return;};
 
+    if (message.author.bot) {console.log('bot shouldn\'t send msg to himself.'); return;};
+
+    // preprocessing the message sent by a person
     let split_msg = message.content
         .toLowerCase() // convert string to lowercase for case insensitivity
         .replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '') // remove sepcial chars
@@ -36,18 +56,12 @@ DepressoBot.on('message', message => {
     
     console.log(`split message: ${split_msg}`);
     
-    for (const msg of split_msg) {
-        for (const kw of keywords) {
-            // If the message contains suicidal keywords
-            if (compare_two_strings(msg, kw)) {
-                const replay_msg = 
-                'If you have suicidal thoughts, PLEASE seek help as soon as you can. \
-                PLEASE call the suicidal prevention lifelines in your region/country:'; 
-
-                // Send suicidal prevention message
-                message.reply(replay_msg);
-                return;
-            }
+    for (const kw of keywords) {
+        // If the words in the message contain suicidal keywords 
+        if (compare_keyword_to_multiple_strings(kw, split_msg)) {
+            // Send suicidal prevention message and return to prevent unnecessary checking of other keywords
+            message.reply(replay_msg);
+            return;
         }
     }
 
