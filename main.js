@@ -1,3 +1,13 @@
+process
+  .on('unhandledRejection', (reason, p) => {
+    // if (lastMessage != null) lastMessage.channel.send("```\nPromise Rejection: " + reason.stack + "\n```\nThis error occured in file " + reason.stack.split("\n")[1].split(/[\(\):]/)[1] + " on line " + reason.stack.split("\n")[1].split(/:/)[1] + ", column " + reason.stack.split("\n")[1].split(/:/)[2].split(")")[0])
+    console.error(reason, 'Unhandled Rejection at Promise', p);
+  })
+  .on('uncaughtException', err => {
+    // if (lastMessage != null) lastMessage.channel.send("```\nException: " + err.stack + "\n```")
+    console.error(err, 'Uncaught Exception caught');
+  });
+
 require('dotenv').config()
 const Discord = require('discord.js');
 const stringSimilarity = require("string-similarity");
@@ -31,14 +41,14 @@ const sentence_delimiters = / +/;
 
 // TODO: send the phone numbers 
 const replay_msg = 
-            '\n If you have suicidal thoughts, PLEASE seek help as soon as you can. \
-            PLEASE call the suicidal prevention lifelines in your region/country:';
+            '\n If you have suicidal thoughts, PLEASE seek help as soon as you can. PLEASE call the suicidal prevention lifelines in your region/country:';
 
 /**
  * I am ready message
  */
 DepressoBot.once('ready', () => {
     console.log('DepressoBot is ready!');
+    DepressoBot.user.setActivity('Suicide Prevention Bot'); //On init, add status
 });
 
 function compare_keyword_to_multiple_strings(keyword_string, strings_arr, min_score=0.61) {
@@ -51,7 +61,7 @@ function compare_keyword_to_multiple_strings(keyword_string, strings_arr, min_sc
 DepressoBot.on('message', message => {
 
     if (message.author.bot) return;
-
+    
     // preprocessing the message sent by a person
     let split_msg = message.content
         .toLowerCase() // convert string to lowercase for case insensitivity
